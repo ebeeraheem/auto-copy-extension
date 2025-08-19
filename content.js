@@ -15,7 +15,6 @@
 
     // Listen for selection changes
     document.addEventListener('mouseup', handleSelection);
-    document.addEventListener('selectionchange', debounce(handleSelectionChange, 300));
 
     async function initializeSettings() {
         try {
@@ -32,7 +31,7 @@
                 return; // Exit if domain is not allowed
             }
         } catch (error) {
-            console.log('Auto-Copy: Settings initialization failed:', error);
+            console.error('Auto-Copy: Settings initialization failed:', error);
         }
     }
 
@@ -69,11 +68,6 @@
         }
     }
 
-    function handleSelectionChange() {
-        // Handle keyboard selections and other selection changes
-        processSelection();
-    }
-
     async function processSelection() {
         if (!isEnabled || !isDomainAllowed()) {
             return;
@@ -101,7 +95,7 @@
             await copyToClipboard(selectedText);
             showNotification('Text copied to clipboard');
         } catch (error) {
-            console.log('Auto-Copy: Failed to copy text:', error);
+            console.error('Auto-Copy: Failed to copy text:', error);
         }
     }
 
@@ -112,7 +106,7 @@
                 await navigator.clipboard.writeText(text);
                 return;
             } catch (error) {
-                console.log('Auto-Copy: Modern clipboard API failed, trying fallback');
+                console.error('Auto-Copy: Modern clipboard API failed, trying fallback');
             }
         }
 
