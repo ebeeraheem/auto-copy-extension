@@ -1,6 +1,26 @@
 // Auto-Copy Text Extension - Popup Script
 // Manages extension settings interface
 
+function sendMessage(message) {
+    return new Promise((resolve, reject) => {
+        if (typeof chrome !== 'undefined' && chrome.runtime) {
+            chrome.runtime.sendMessage(message, (response) => {
+                if (chrome.runtime.lastError) {
+                    reject(chrome.runtime.lastError);
+                } else {
+                    resolve(response);
+                }
+            });
+        } else if (typeof browser !== 'undefined' && browser.runtime) {
+            browser.runtime.sendMessage(message)
+                .then(resolve)
+                .catch(reject);
+        } else {
+            reject(new Error('Extension API not available'));
+        }
+    });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const enabledCheckbox = document.getElementById('enabled');
     const blacklistMode = document.getElementById('blacklistMode');
@@ -32,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             whitelistDomains.value = (response.whitelistedDomains || []).join('\n');
             
         } catch (error) {
+            console.error('Failed to load settings:', error);
             showStatus('Failed to load settings', 'error');
         }
     }
@@ -55,28 +76,9 @@ document.addEventListener('DOMContentLoaded', () => {
             showStatus('Settings saved successfully!', 'success');
             
         } catch (error) {
+            console.error('Failed to save settings:', error);
             showStatus('Failed to save settings', 'error');
         }
-    }
-
-    function sendMessage(message) {
-        return new Promise((resolve, reject) => {
-            if (typeof chrome !== 'undefined' && chrome.runtime) {
-                chrome.runtime.sendMessage(message, (response) => {
-                    if (chrome.runtime.lastError) {
-                        reject(chrome.runtime.lastError);
-                    } else {
-                        resolve(response);
-                    }
-                });
-            } else if (typeof browser !== 'undefined' && browser.runtime) {
-                browser.runtime.sendMessage(message)
-                    .then(resolve)
-                    .catch(reject);
-            } else {
-                reject(new Error('Extension API not available'));
-            }
-        });
     }
 
     function showStatus(message, type) {

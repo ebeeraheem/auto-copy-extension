@@ -11,37 +11,54 @@ chrome.runtime.onInstalled.addListener(() => {
     });
 });
 
+// Helper function to get settings
+function getSettings(sendResponse) {
+    chrome.storage.local.get(['enabled', 'blacklistedDomains', 'whitelistedDomains', 'useWhitelist'], (result) => {
+        sendResponse({
+            enabled: result.enabled !== false,
+            blacklistedDomains: result.blacklistedDomains || [],
+            whitelistedDomains: result.whitelistedDomains || [],
+            useWhitelist: result.useWhitelist || false
+        });
+    });
+}
+
+// Helper function to notify content scripts
+function notifyContentScripts(request, callback) {
+    chrome.tabs.query({}, (tabs) => {
+        tabs.forEach(tab => {
+            if (tab.url.startsWith('http://') || tab.url.startsWith('https://')) {
+                chrome.tabs.sendMessage(tab.id, request, () => {
+                    // Ignore errors for tabs that don't have the content script
+                    if (chrome.runtime.lastError) {
+                        // Silent fail
+                    }
+                });
+            }
+        });
+        callback();
+    });
+}
+
+// Helper function to update settings
+function updateSettings(request, sendResponse) {
+    chrome.storage.local.set(request.settings, () => {
+        // Notify all content scripts of the change
+        notifyContentScripts(request, () => {
+            sendResponse({ success: true });
+        });
+    });
+}
+
 // Handle messages from popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'getSettings') {
-        chrome.storage.local.get(['enabled', 'blacklistedDomains', 'whitelistedDomains', 'useWhitelist'], (result) => {
-            sendResponse({
-                enabled: result.enabled !== false,
-                blacklistedDomains: result.blacklistedDomains || [],
-                whitelistedDomains: result.whitelistedDomains || [],
-                useWhitelist: result.useWhitelist || false
-            });
-        });
+        getSettings(sendResponse);
         return true; // Keep message channel open for async response
     }
 
     if (request.action === 'updateSettings') {
-        chrome.storage.local.set(request.settings, () => {
-            // Notify all content scripts of the change
-            chrome.tabs.query({}, (tabs) => {
-                tabs.forEach(tab => {
-                    if (tab.url.startsWith('http://') || tab.url.startsWith('https://')) {
-                        chrome.tabs.sendMessage(tab.id, request, () => {
-                            // Ignore errors for tabs that don't have the content script
-                            if (chrome.runtime.lastError) {
-                                // Silent fail
-                            }
-                        });
-                    }
-                });
-            });
-            sendResponse({ success: true });
-        });
+        updateSettings(request, sendResponse);
         return true;
     }
 });

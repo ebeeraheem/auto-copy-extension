@@ -48,7 +48,7 @@
     }
 
     function isDomainAllowed() {
-        const currentDomain = window.location.hostname;
+        const currentDomain = globalThis.location.hostname;
 
         if (useWhitelist) {
             return whitelistedDomains.some(domain => 
@@ -73,23 +73,13 @@
             return;
         }
 
-        const selection = window.getSelection();
-        const selectedText = selection.toString().trim();
+        const selection = globalThis.getSelection();
+        const selectedText = selection.toString();
 
         // Ignore empty selections or whitespace-only selections
         if (!selectedText || selectedText.length === 0) {
             return;
         }
-
-        // // Avoid copying if selection is within an input field (prevent interference)
-        // const activeElement = document.activeElement;
-        // if (activeElement && (
-        //     activeElement.tagName === 'INPUT' || 
-        //     activeElement.tagName === 'TEXTAREA' ||
-        //     activeElement.contentEditable === 'true'
-        // )) {
-        //     return;
-        // }
 
         try {
             await copyToClipboard(selectedText);
@@ -100,30 +90,13 @@
     }
 
     async function copyToClipboard(text) {
-        // Try modern clipboard API first
-        if (navigator.clipboard && navigator.clipboard.writeText) {
+        if (navigator?.clipboard.writeText) {
             try {
                 await navigator.clipboard.writeText(text);
                 return;
             } catch (error) {
-                console.error('Auto-Copy: Modern clipboard API failed, trying fallback');
+                console.error('Auto-Copy: Modern clipboard API failed:', error);
             }
-        }
-
-        // Fallback method for older browsers
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-999999px';
-        textArea.style.top = '-999999px';
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-
-        try {
-            document.execCommand('copy');
-        } finally {
-            document.body.removeChild(textArea);
         }
     }
 
@@ -159,22 +132,10 @@
             notification.style.opacity = '0';
             setTimeout(() => {
                 if (notification.parentNode) {
-                    notification.parentNode.removeChild(notification);
+                    notification.remove();
                 }
             }, 300);
         }, 2000);
-    }
-
-    function debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
     }
 
     // Listen for settings changes from popup
