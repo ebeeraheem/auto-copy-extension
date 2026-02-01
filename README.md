@@ -1,15 +1,21 @@
 # Auto-Copy Text Browser Extension
 
-A minimal, secure browser extension that automatically copies selected text to the clipboard.
+A powerful, configurable browser extension that automatically copies selected text to the clipboard with advanced features.
 
 ## Features
 
-- 🔄 **Automatic copying**: Text is copied immediately upon selection
-- 🛡️ **Secure**: No external requests, minimal permissions
-- 🎛️ **Configurable**: On/off toggle, domain whitelist/blacklist
-- 🔔 **Visual feedback**: Subtle notification when text is copied
+- 🔄 **Automatic copying**: Text is copied immediately upon mouse selection
+- 🎛️ **Smart text processing**: Configurable text filtering and cleaning
+- 📋 **Copy history**: Track and re-copy from your recent selections
+- 🔔 **Customizable notifications**: Configurable position and duration
+- 🛡️ **Domain control**: Advanced whitelist/blacklist functionality
+- 📊 **Settings management**: Export/import your configuration
+- 🚫 **Duplicate prevention**: Avoid copying the same text repeatedly
+- 🎯 **Minimum length filtering**: Set minimum text length for copying
+- ✨ **Whitespace trimming**: Automatically clean up copied text
 - 🌐 **Cross-browser**: Works on Edge, Chrome, and Firefox
-- ⚡ **Lightweight**: Minimal resource usage
+- ⚡ **Lightweight**: Minimal resource usage with performance optimizations
+- 🛡️ **Secure**: No external requests, minimal permissions
 
 ## Installation
 
@@ -47,37 +53,67 @@ To create a proper Firefox add-on:
 ### Basic Operation
 
 1. Once installed, the extension works automatically
-2. Simply select text on any webpage
+2. Simply select text with your mouse on any webpage
 3. The text will be copied to your clipboard automatically
-4. A small notification will appear confirming the copy
+4. A customizable notification will appear confirming the copy
+5. View and manage your copy history through the popup
 
 ### Configuration
 
-Click the extension icon to access settings:
+Click the extension icon to access comprehensive settings:
+
+#### Main Controls
 
 - **Enable/Disable**: Toggle the auto-copy functionality
-- **Domain Control**: Choose between blacklist or whitelist mode
-  - **Blacklist Mode**: Auto-copy works everywhere except specified domains
-  - **Whitelist Mode**: Auto-copy only works on specified domains
+
+#### Text Processing Options
+
+- **Trim whitespace**: Automatically clean up extra spaces and line breaks
+- **Avoid duplicate copies**: Skip copying the same text repeatedly
+- **Minimum text length**: Set minimum character count for copying (prevents accidental single-character copies)
+
+#### Notification Settings
+
+- **Position**: Choose where notifications appear (top-right, top-left, bottom-right, bottom-left, center)
+- **Duration**: Set how long notifications stay visible (500ms to 10 seconds)
+
+#### Domain Control
+
+- **Blacklist Mode**: Auto-copy works everywhere except specified domains
+- **Whitelist Mode**: Auto-copy only works on specified domains
 - **Domain Lists**: Add domains (one per line) to control where the extension works
+
+#### Copy History
+
+- **View History**: Browse your last 20 copied items
+- **Re-copy**: Click any history item to copy it again
+- **Clear History**: Remove all stored history
+
+#### Settings Management
+
+- **Export Settings**: Download your complete configuration as JSON
+- **Import Settings**: Upload and restore a previously exported configuration
 
 ### Security Notes
 
 This extension:
+
 - ✅ Only requests minimal necessary permissions
 - ✅ Contains no external network requests
-- ✅ Stores no data outside your browser
+- ✅ Stores data only locally in your browser
 - ✅ Uses modern, secure APIs
 - ✅ All code is visible and auditable
+- ✅ Copy history is stored locally and never transmitted
+- ✅ Settings can be exported/imported for backup purposes
 
 ## Browser Compatibility
 
-| Browser | Manifest Version | Status |
-|---------|------------------|--------|
-| Edge (Chromium) | V3 | ✅ Full Support |
-| Chrome | V3 | ✅ Full Support |
-| Firefox (Latest) | V2/V3 | ✅ Full Support |
-| Firefox (Older) | V2 | ✅ Compatible |
+| Browser          | Manifest Version | Status          |
+| ---------------- | ---------------- | --------------- |
+| Edge (Chromium)  | V3               | ✅ Full Support |
+| Chrome           | V3               | ✅ Full Support |
+| Firefox (Latest) | V2/V3            | ✅ Full Support |
+| Firefox (Older)  | V2               | ✅ Compatible   |
 
 ## File Structure
 
@@ -100,8 +136,9 @@ auto-copy-extension/
 ## Creating Icons
 
 You'll need to create three icon files in the `icons/` folder:
+
 - `icon16.png` (16x16 pixels)
-- `icon48.png` (48x48 pixels)  
+- `icon48.png` (48x48 pixels)
 - `icon128.png` (128x128 pixels)
 
 These should be simple clipboard or copy-related icons.
@@ -112,9 +149,14 @@ These should be simple clipboard or copy-related icons.
 
 1. Load the extension as described in installation
 2. Visit any webpage with selectable text
-3. Select text and verify it's copied to clipboard
-4. Test the popup settings
+3. Select text with your mouse and verify it's copied to clipboard
+4. Test all popup settings including:
+    - Text processing options (trim whitespace, minimum length, duplicate prevention)
+    - Notification customization (position, duration)
+    - Copy history functionality
+    - Settings export/import
 5. Verify domain blacklist/whitelist functionality
+6. Test that keyboard selections (Ctrl+A, arrow keys) don't trigger copying
 
 ### Debugging
 
@@ -139,26 +181,53 @@ These should be simple clipboard or copy-related icons.
 ## Troubleshooting
 
 **Extension not working:**
+
 - Check that it's enabled in your browser's extension settings
 - Verify the domain isn't blacklisted in extension settings
+- Ensure minimum text length requirement is met
 - Try refreshing the webpage
 
 **Text not copying:**
+
 - Modern browsers may require HTTPS for clipboard access
 - Check browser console for error messages
 - Ensure extension has proper permissions
+- Verify text meets minimum length requirement
 
 **Notification not showing:**
+
 - Check if the website blocks extension notifications
 - Verify extension is enabled for the current domain
+- Check notification settings (position and duration)
+
+**History not working:**
+
+- Verify extension has storage permissions
+- Check if browser storage quota has been reached
+- Try clearing and rebuilding history
+
+**Settings not saving:**
+
+- Check browser console for error messages
+- Verify extension has storage permissions
+- Try exporting settings to backup your configuration
+
+**Keyboard selections copying:**
+
+- This is by design - only mouse selections trigger copying
+- Keyboard selections (Ctrl+A, arrow keys, etc.) are intentionally ignored
 
 ## Privacy
 
 This extension:
+
 - Does not collect any user data
 - Does not send data to external servers
 - Only accesses clipboard to write selected text
-- Stores settings locally in your browser only
+- Stores settings and copy history locally in your browser only
+- Copy history is limited to 20 items and never leaves your device
+- Settings export creates a local file that you control
+- No analytics, tracking, or telemetry of any kind
 
 ## License
 
