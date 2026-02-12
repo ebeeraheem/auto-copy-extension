@@ -10,7 +10,6 @@
     let whitelistedDomains = [];
     let useWhitelist = false;
     let minTextLength = 3;
-    let trimWhitespace = true;
     let avoidDuplicates = true;
     let notificationPosition = 'top-right';
     let notificationDuration = 2000;
@@ -29,7 +28,7 @@
             // Get stored settings
             const result = await getStorageData([
                 'enabled', 'blacklistedDomains', 'whitelistedDomains', 'useWhitelist',
-                'minTextLength', 'trimWhitespace', 'avoidDuplicates', 
+                'minTextLength', 'avoidDuplicates', 
                 'notificationPosition', 'notificationDuration', 'copyHistory'
             ]);
             
@@ -38,7 +37,6 @@
             whitelistedDomains = result.whitelistedDomains || [];
             useWhitelist = result.useWhitelist || false;
             minTextLength = result.minTextLength || 3;
-            trimWhitespace = result.trimWhitespace !== false;
             avoidDuplicates = result.avoidDuplicates !== false;
             notificationPosition = result.notificationPosition || 'top-right';
             notificationDuration = result.notificationDuration || 2000;
@@ -102,10 +100,7 @@
         }
 
         const selection = globalThis.getSelection();
-        let selectedText = selection.toString();
-
-        // Apply text processing
-        selectedText = processText(selectedText);
+        const selectedText = selection.toString();
 
         // Ignore empty selections, whitespace-only selections, or text below minimum length
         if (!selectedText || selectedText.length < minTextLength) {
@@ -124,24 +119,11 @@
             // Add to history
             addToHistory(selectedText);
             
-            showNotification(`Text copied: "${truncateText(selectedText, 50)}"`);
+            showNotification('Text copied');
         } catch (error) {
             console.error('Auto-Copy: Failed to copy text:', error);
             showNotification('Failed to copy text', 'error');
         }
-    }
-
-    function processText(text) {
-        if (!text) return text;
-        
-        // Trim whitespace if enabled
-        if (trimWhitespace) {
-            text = text.trim();
-            // Replace multiple whitespace characters with single spaces
-            text = text.replaceAll(/\s+/g, ' ');
-        }
-        
-        return text;
     }
 
     function addToHistory(text) {
@@ -160,11 +142,6 @@
         if (typeof chrome !== 'undefined' && chrome.storage) {
             chrome.storage.local.set({ copyHistory });
         }
-    }
-
-    function truncateText(text, maxLength) {
-        if (text.length <= maxLength) return text;
-        return text.substring(0, maxLength - 3) + '...';
     }
 
     async function copyToClipboard(text) {
@@ -243,7 +220,6 @@
                 whitelistedDomains = request.settings.whitelistedDomains || [];
                 useWhitelist = request.settings.useWhitelist || false;
                 minTextLength = request.settings.minTextLength || 3;
-                trimWhitespace = request.settings.trimWhitespace !== false;
                 avoidDuplicates = request.settings.avoidDuplicates !== false;
                 notificationPosition = request.settings.notificationPosition || 'top-right';
                 notificationDuration = request.settings.notificationDuration || 2000;
@@ -255,7 +231,7 @@
                 sendResponse({ success: true });
             } else if (request.action === 'copyFromHistory') {
                 copyToClipboard(request.text);
-                showNotification(`Copied from history: "${truncateText(request.text, 30)}"`);
+                showNotification('Text copied');
                 sendResponse({ success: true });
             }
         });
