@@ -21,38 +21,6 @@
 
             <div class="setting">
                 <fieldset>
-                    <legend>Text Processing Options:</legend>
-                    <div class="sub-setting">
-                        <label class="toggle-container" for="trimWhitespace">
-                            <input type="checkbox" id="trimWhitespace" />
-                            <span class="toggle-slider small"></span>
-                            <span class="toggle-label">Trim whitespace</span>
-                        </label>
-                    </div>
-                    <div class="sub-setting">
-                        <label class="toggle-container" for="avoidDuplicates">
-                            <input type="checkbox" id="avoidDuplicates" />
-                            <span class="toggle-slider small"></span>
-                            <span class="toggle-label"
-                                >Avoid duplicate copies</span
-                            >
-                        </label>
-                    </div>
-                    <div class="sub-setting">
-                        <label for="minTextLength">Minimum text length:</label>
-                        <input
-                            type="number"
-                            id="minTextLength"
-                            min="1"
-                            max="100"
-                            value="3"
-                        />
-                    </div>
-                </fieldset>
-            </div>
-
-            <div class="setting">
-                <fieldset>
                     <legend>Notification Settings:</legend>
                     <div class="sub-setting">
                         <label for="notificationPosition">Position:</label>
@@ -114,29 +82,6 @@
                     id="whitelistDomains"
                     placeholder="google.com&#10;github.com&#10;(one per line)"
                 ></textarea>
-            </div>
-
-            <div class="setting">
-                <fieldset>
-                    <legend>Copy History:</legend>
-                    <div class="history-controls">
-                        <button id="viewHistory" class="secondary">
-                            View History
-                        </button>
-                        <button id="clearHistory" class="secondary danger">
-                            Clear History
-                        </button>
-                    </div>
-                    <div id="historyPanel" class="history-panel hidden">
-                        <div class="history-header">
-                            <span>Recent Copies:</span>
-                            <button id="closeHistory" class="close-btn">
-                                &times;
-                            </button>
-                        </div>
-                        <div id="historyList" class="history-list"></div>
-                    </div>
-                </fieldset>
             </div>
 
             <div class="setting">

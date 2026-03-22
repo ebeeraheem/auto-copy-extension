@@ -8,12 +8,8 @@ chrome.runtime.onInstalled.addListener(() => {
         blacklistedDomains: [],
         whitelistedDomains: [],
         useWhitelist: false,
-        minTextLength: 3,
-        trimWhitespace: true,
-        avoidDuplicates: true,
         notificationPosition: 'top-right',
-        notificationDuration: 2000,
-        copyHistory: []
+        notificationDuration: 2000
     });
 });
 
@@ -21,20 +17,15 @@ chrome.runtime.onInstalled.addListener(() => {
 function getSettings(sendResponse) {
     chrome.storage.local.get([
         'enabled', 'blacklistedDomains', 'whitelistedDomains', 'useWhitelist',
-        'minTextLength', 'trimWhitespace', 'avoidDuplicates', 
-        'notificationPosition', 'notificationDuration', 'copyHistory'
+        'notificationPosition', 'notificationDuration'
     ], (result) => {
         sendResponse({
             enabled: result.enabled !== false,
             blacklistedDomains: result.blacklistedDomains || [],
             whitelistedDomains: result.whitelistedDomains || [],
             useWhitelist: result.useWhitelist || false,
-            minTextLength: result.minTextLength || 3,
-            trimWhitespace: result.trimWhitespace !== false,
-            avoidDuplicates: result.avoidDuplicates !== false,
             notificationPosition: result.notificationPosition || 'top-right',
-            notificationDuration: result.notificationDuration || 2000,
-            copyHistory: result.copyHistory || []
+            notificationDuration: result.notificationDuration || 2000
         });
     });
 }
@@ -75,20 +66,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
     if (request.action === 'updateSettings') {
         updateSettings(request, sendResponse);
-        return true;
-    }
-
-    if (request.action === 'getHistory') {
-        chrome.storage.local.get(['copyHistory'], (result) => {
-            sendResponse({ history: result.copyHistory || [] });
-        });
-        return true;
-    }
-
-    if (request.action === 'clearHistory') {
-        chrome.storage.local.set({ copyHistory: [] }, () => {
-            sendResponse({ success: true });
-        });
         return true;
     }
 

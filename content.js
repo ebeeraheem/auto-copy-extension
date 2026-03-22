@@ -9,12 +9,8 @@
     let blacklistedDomains = [];
     let whitelistedDomains = [];
     let useWhitelist = false;
-    let minTextLength = 3;
-    let avoidDuplicates = true;
     let notificationPosition = 'top-right';
     let notificationDuration = 2000;
-    let lastCopiedText = '';
-    let copyHistory = [];
     let selectionTimeout;
 
     // Initialize extension settings
@@ -28,19 +24,15 @@
             // Get stored settings
             const result = await getStorageData([
                 'enabled', 'blacklistedDomains', 'whitelistedDomains', 'useWhitelist',
-                'minTextLength', 'avoidDuplicates', 
-                'notificationPosition', 'notificationDuration', 'copyHistory'
+                'notificationPosition', 'notificationDuration'
             ]);
-            
+
             isEnabled = result.enabled !== false; // Default to true
             blacklistedDomains = result.blacklistedDomains || [];
             whitelistedDomains = result.whitelistedDomains || [];
             useWhitelist = result.useWhitelist || false;
-            minTextLength = result.minTextLength || 3;
-            avoidDuplicates = result.avoidDuplicates !== false;
             notificationPosition = result.notificationPosition || 'top-right';
             notificationDuration = result.notificationDuration || 2000;
-            copyHistory = result.copyHistory || [];
 
             // Check if current domain is allowed
             if (!isDomainAllowed()) {
@@ -102,45 +94,16 @@
         const selection = globalThis.getSelection();
         const selectedText = selection.toString();
 
-        // Ignore empty selections, whitespace-only selections, or text below minimum length
-        if (!selectedText || selectedText.length < minTextLength) {
-            return;
-        }
-
-        // Avoid duplicates if enabled
-        if (avoidDuplicates && selectedText === lastCopiedText) {
+        if (!selectedText) {
             return;
         }
 
         try {
             await copyToClipboard(selectedText);
-            lastCopiedText = selectedText;
-            
-            // Add to history
-            addToHistory(selectedText);
-            
             showNotification('Text copied');
         } catch (error) {
             console.error('Auto-Copy: Failed to copy text:', error);
             showNotification('Failed to copy text', 'error');
-        }
-    }
-
-    function addToHistory(text) {
-        // Remove existing occurrence if present
-        copyHistory = copyHistory.filter(item => item !== text);
-        
-        // Add to beginning of history
-        copyHistory.unshift(text);
-        
-        // Limit history to 20 items
-        if (copyHistory.length > 20) {
-            copyHistory = copyHistory.slice(0, 20);
-        }
-        
-        // Save to storage
-        if (typeof chrome !== 'undefined' && chrome.storage) {
-            chrome.storage.local.set({ copyHistory });
         }
     }
 
@@ -219,20 +182,8 @@
                 blacklistedDomains = request.settings.blacklistedDomains || [];
                 whitelistedDomains = request.settings.whitelistedDomains || [];
                 useWhitelist = request.settings.useWhitelist || false;
-                minTextLength = request.settings.minTextLength || 3;
-                avoidDuplicates = request.settings.avoidDuplicates !== false;
                 notificationPosition = request.settings.notificationPosition || 'top-right';
                 notificationDuration = request.settings.notificationDuration || 2000;
-            } else if (request.action === 'getHistory') {
-                sendResponse({ history: copyHistory });
-            } else if (request.action === 'clearHistory') {
-                copyHistory = [];
-                chrome.storage.local.set({ copyHistory: [] });
-                sendResponse({ success: true });
-            } else if (request.action === 'copyFromHistory') {
-                copyToClipboard(request.text);
-                showNotification('Text copied');
-                sendResponse({ success: true });
             }
         });
     }

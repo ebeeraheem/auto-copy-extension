@@ -5,14 +5,9 @@ A powerful, configurable browser extension that automatically copies selected te
 ## Features
 
 - 🔄 **Automatic copying**: Text is copied immediately upon mouse selection
-- 🎛️ **Smart text processing**: Configurable text filtering and cleaning
-- 📋 **Copy history**: Track and re-copy from your recent selections
 - 🔔 **Customizable notifications**: Configurable position and duration
 - 🛡️ **Domain control**: Advanced whitelist/blacklist functionality
 - 📊 **Settings management**: Export/import your configuration
-- 🚫 **Duplicate prevention**: Avoid copying the same text repeatedly
-- 🎯 **Minimum length filtering**: Set minimum text length for copying
-- ✨ **Whitespace trimming**: Automatically clean up copied text
 - 🌐 **Cross-browser**: Works on Edge, Chrome, and Firefox
 - ⚡ **Lightweight**: Minimal resource usage with performance optimizations
 - 🛡️ **Secure**: No external requests, minimal permissions
@@ -56,7 +51,7 @@ To create a proper Firefox add-on:
 2. Simply select text with your mouse on any webpage
 3. The text will be copied to your clipboard automatically
 4. A customizable notification will appear confirming the copy
-5. View and manage your copy history through the popup
+5. A customizable notification will appear confirming the copy
 
 ### Configuration
 
@@ -65,12 +60,6 @@ Click the extension icon to access comprehensive settings:
 #### Main Controls
 
 - **Enable/Disable**: Toggle the auto-copy functionality
-
-#### Text Processing Options
-
-- **Trim whitespace**: Automatically clean up extra spaces and line breaks
-- **Avoid duplicate copies**: Skip copying the same text repeatedly
-- **Minimum text length**: Set minimum character count for copying (prevents accidental single-character copies)
 
 #### Notification Settings
 
@@ -82,12 +71,6 @@ Click the extension icon to access comprehensive settings:
 - **Blacklist Mode**: Auto-copy works everywhere except specified domains
 - **Whitelist Mode**: Auto-copy only works on specified domains
 - **Domain Lists**: Add domains (one per line) to control where the extension works
-
-#### Copy History
-
-- **View History**: Browse your last 20 copied items
-- **Re-copy**: Click any history item to copy it again
-- **Clear History**: Remove all stored history
 
 #### Settings Management
 
@@ -103,7 +86,6 @@ This extension:
 - ✅ Stores data only locally in your browser
 - ✅ Uses modern, secure APIs
 - ✅ All code is visible and auditable
-- ✅ Copy history is stored locally and never transmitted
 - ✅ Settings can be exported/imported for backup purposes
 
 ## Browser Compatibility
@@ -151,12 +133,9 @@ These should be simple clipboard or copy-related icons.
 2. Visit any webpage with selectable text
 3. Select text with your mouse and verify it's copied to clipboard
 4. Test all popup settings including:
-    - Text processing options (trim whitespace, minimum length, duplicate prevention)
     - Notification customization (position, duration)
-    - Copy history functionality
     - Settings export/import
 5. Verify domain blacklist/whitelist functionality
-6. Test that keyboard selections (Ctrl+A, arrow keys) don't trigger copying
 
 ### Debugging
 
@@ -184,7 +163,6 @@ These should be simple clipboard or copy-related icons.
 
 - Check that it's enabled in your browser's extension settings
 - Verify the domain isn't blacklisted in extension settings
-- Ensure minimum text length requirement is met
 - Try refreshing the webpage
 
 **Text not copying:**
@@ -192,30 +170,17 @@ These should be simple clipboard or copy-related icons.
 - Modern browsers may require HTTPS for clipboard access
 - Check browser console for error messages
 - Ensure extension has proper permissions
-- Verify text meets minimum length requirement
-
 **Notification not showing:**
 
 - Check if the website blocks extension notifications
 - Verify extension is enabled for the current domain
 - Check notification settings (position and duration)
 
-**History not working:**
-
-- Verify extension has storage permissions
-- Check if browser storage quota has been reached
-- Try clearing and rebuilding history
-
 **Settings not saving:**
 
 - Check browser console for error messages
 - Verify extension has storage permissions
 - Try exporting settings to backup your configuration
-
-**Keyboard selections copying:**
-
-- This is by design - only mouse selections trigger copying
-- Keyboard selections (Ctrl+A, arrow keys, etc.) are intentionally ignored
 
 ## Privacy
 
@@ -224,8 +189,7 @@ This extension:
 - Does not collect any user data
 - Does not send data to external servers
 - Only accesses clipboard to write selected text
-- Stores settings and copy history locally in your browser only
-- Copy history is limited to 20 items and never leaves your device
+- Stores settings locally in your browser only
 - Settings export creates a local file that you control
 - No analytics, tracking, or telemetry of any kind
 
